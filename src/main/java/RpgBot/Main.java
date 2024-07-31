@@ -21,7 +21,6 @@ public class Main {
 
         try {
             tx = session.beginTransaction();
-            // Logique de persistance
             tx.commit();
         } catch (Exception e) {
             if (tx != null) tx.rollback();

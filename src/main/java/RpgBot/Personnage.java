@@ -27,15 +27,12 @@ public class Personnage {
     @Column(name = "dernier_coffre")
     private LocalDateTime dernierCoffre;
 
-    // Constructeur par défaut (requis pour JPA)
     public Personnage() {}
 
-    // Constructeur avec utilisateurId
     public Personnage(Long utilisateurId) {
         this.utilisateurId = utilisateurId;
     }
 
-    // Méthodes supplémentaires
     public void deplacer(String direction) {
         switch (direction.toLowerCase()) {
             case "nord":
