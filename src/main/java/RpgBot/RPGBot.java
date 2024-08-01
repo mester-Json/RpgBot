@@ -7,7 +7,7 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 
 public class RPGBot extends ListenerAdapter {
 
-    private static final String TOKEN = "Api Bot ";
+    private static final String TOKEN = "";
     private Jeu jeu = new Jeu();
 
     public static void main(String[] args) throws Exception {
@@ -23,19 +23,28 @@ public class RPGBot extends ListenerAdapter {
             return;
         }
 
-        String[] command = event.getMessage().getContentRaw().split(" ", 2);
-        long utilisateurId = Long.parseLong(event.getAuthor().getId());
+        String messageContent = event.getMessage().getContentRaw().trim();
+        String prefix = "!";
 
-        if (command.length > 0) {
-            switch (command[0].toLowerCase()) {
-                case "!start":
-                    jeu.ajouterPersonnage(utilisateurId);
+        if (messageContent.startsWith(prefix)) {
+            String[] command = messageContent.substring(prefix.length()).split(" ", 2);
+            if (command.length == 0) {
+                event.getChannel().sendMessage("Commande invalide.").queue();
+                return;
+            }
+
+            String commandName = command[0].toLowerCase();
+            String discordId = String.valueOf(event.getAuthor().getIdLong());
+
+            switch (commandName) {
+                case "start":
+                    jeu.commencerJeu(discordId);
                     event.getChannel().sendMessage("Bienvenue dans le jeu, " + event.getAuthor().getName() + "!").queue();
                     break;
 
-                case "!move":
+                case "move":
                     if (command.length > 1) {
-                        Personnage personnage = jeu.getPersonnage(utilisateurId);
+                        Personnage personnage = jeu.getPersonnage(discordId);
                         if (personnage != null) {
                             personnage.deplacer(command[1]);
                             event.getChannel().sendMessage("Vous êtes maintenant en position (" + personnage.getPositionX() + ", " + personnage.getPositionY() + ")").queue();
@@ -47,14 +56,14 @@ public class RPGBot extends ListenerAdapter {
                     }
                     break;
 
-                case "!coffre":
-                    Personnage personnage = jeu.getPersonnage(utilisateurId);
+                case "coffre":
+                    Personnage personnage = jeu.getPersonnage(discordId);
                     if (personnage != null) {
                         if (personnage.peutOuvrirCoffre()) {
                             String lootMessage = personnage.ouvrirCoffre();
                             event.getChannel().sendMessage(lootMessage).queue();
                         } else {
-                            event.getChannel().sendMessage("Vous devez attendre 24 heures pour ouvrir un autre coffre.").queue();
+                            event.getChannel().sendMessage("Vous devez attendre avant de pouvoir ouvrir un autre coffre.").queue();
                         }
                     } else {
                         event.getChannel().sendMessage("Vous devez d'abord commencer le jeu avec !start").queue();
@@ -62,11 +71,9 @@ public class RPGBot extends ListenerAdapter {
                     break;
 
                 default:
-                    event.getChannel().sendMessage("Commande non reconnue. Utilisez !start, !move ou !coffre.").queue();
+                    event.getChannel().sendMessage("Commande invalide.").queue();
                     break;
             }
-        } else {
-            event.getChannel().sendMessage("Aucune commande spécifiée.").queue();
         }
     }
 }

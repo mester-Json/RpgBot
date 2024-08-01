@@ -1,4 +1,6 @@
+RpgBot/Personnage.class
+RpgBot/HibernateUtil.class
 RpgBot/Jeu.class
 RpgBot/Main.class
-RpgBot/Personnage.class
+RpgBot/CoffreOuvert.class
 RpgBot/RPGBot.class

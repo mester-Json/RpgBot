@@ -1,28 +1,21 @@
 package RpgBot;
 
-import lombok.Data;
-import javax.persistence.*;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.ManyToOne;
+import javax.persistence.Column;
+import javax.persistence.JoinColumn;
 
 @Entity
 @Table(name = "personnages")
-@Data
 public class Personnage {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "utilisateur_id")
-    private Long utilisateurId;
-
-    private String nom;
+    @Column(name = "dernier_coffre")
+    private String dernierCoffre;
 
     @Column(name = "position_x")
     private int positionX;
@@ -30,88 +23,84 @@ public class Personnage {
     @Column(name = "position_y")
     private int positionY;
 
-    @Column(name = "dernier_coffre")
-    private LocalDateTime dernierCoffre;
+    @ManyToOne
+    @JoinColumn(name = "utilisateur_id")
+    private Utilisateur utilisateur;
 
+    // Constructeurs, getters, setters
     public Personnage() {}
 
-    public Personnage(Long utilisateurId) {
-        this.utilisateurId = utilisateurId;
+    public Personnage(Long id, String dernierCoffre, int positionX, int positionY, Utilisateur utilisateur) {
+        this.id = id;
+        this.dernierCoffre = dernierCoffre;
+        this.positionX = positionX;
+        this.positionY = positionY;
+        this.utilisateur = utilisateur;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getDernierCoffre() {
+        return dernierCoffre;
+    }
+
+    public void setDernierCoffre(String dernierCoffre) {
+        this.dernierCoffre = dernierCoffre;
+    }
+
+    public int getPositionX() {
+        return positionX;
+    }
+
+    public void setPositionX(int positionX) {
+        this.positionX = positionX;
+    }
+
+    public int getPositionY() {
+        return positionY;
+    }
+
+    public void setPositionY(int positionY) {
+        this.positionY = positionY;
+    }
+
+    public Utilisateur getUtilisateur() {
+        return utilisateur;
+    }
+
+    public void setUtilisateur(Utilisateur utilisateur) {
+        this.utilisateur = utilisateur;
     }
 
     public void deplacer(String direction) {
-        switch (direction.toLowerCase()) {
-            case "nord":
-                positionY++;
-                break;
-            case "sud":
-                positionY--;
-                break;
-            case "est":
-                positionX++;
-                break;
-            case "ouest":
-                positionX--;
-                break;
-            default:
-                System.out.println("Direction inconnue.");
+        if ("nord".equalsIgnoreCase(direction)) {
+            positionY++;
+        } else if ("sud".equalsIgnoreCase(direction)) {
+            positionY--;
+        } else if ("est".equalsIgnoreCase(direction)) {
+            positionX++;
+        } else if ("ouest".equalsIgnoreCase(direction)) {
+            positionX--;
         }
     }
 
     public boolean peutOuvrirCoffre() {
-        return dernierCoffre == null || LocalDateTime.now().isAfter(dernierCoffre.plusMinutes(10));
+        // Exemple simple : un coffre peut être ouvert si le dernier coffre est null ou vide
+        return dernierCoffre == null || dernierCoffre.isEmpty();
     }
 
     public String ouvrirCoffre() {
         if (peutOuvrirCoffre()) {
-            dernierCoffre = LocalDateTime.now();
-            return genererLoot();
+            dernierCoffre = "Nouveau coffre ouvert!";
+            return "Vous avez ouvert un coffre et trouvé un trésor!";
         } else {
-            return "Vous ne pouvez pas ouvrir de coffre maintenant.";
+            return "Vous avez déjà ouvert un coffre récemment.";
         }
-    }
-
-    private String genererLoot() {
-        List<String> communLoot = new ArrayList<>();
-        List<String> rareLoot = new ArrayList<>();
-        List<String> legendaireLoot = new ArrayList<>();
-        Random rand = new Random();
-
-        try (BufferedReader br = new BufferedReader(new FileReader("src/main/java/RpgBot/loot.txt"))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                if (line.startsWith("#") || line.trim().isEmpty()) continue;
-                String[] parts = line.split(",");
-                if (parts.length == 3) {
-                    String categorie = parts[2].trim();
-                    switch (categorie) {
-                        case "commun":
-                            communLoot.add(parts[1].trim());
-                            break;
-                        case "rare":
-                            rareLoot.add(parts[1].trim());
-                            break;
-                        case "légendaire":
-                            legendaireLoot.add(parts[1].trim());
-                            break;
-                    }
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        int lootTier = rand.nextInt(100);
-        String loot;
-
-        if (lootTier < 5 && !legendaireLoot.isEmpty()) {
-            loot = legendaireLoot.get(rand.nextInt(legendaireLoot.size()));
-        } else if (lootTier < 20 && !rareLoot.isEmpty()) {
-            loot = rareLoot.get(rand.nextInt(rareLoot.size()));
-        } else {
-            loot = communLoot.get(rand.nextInt(communLoot.size()));
-        }
-
-        return "Vous avez trouvé un(e) " + loot + "!";
     }
 }
