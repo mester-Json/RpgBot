@@ -7,7 +7,7 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 
 public class RPGBot extends ListenerAdapter {
 
-    private static final String TOKEN = "Clés api bot ";
+    private static final String TOKEN = "Api Bot ";
     private Jeu jeu = new Jeu();
 
     public static void main(String[] args) throws Exception {
@@ -51,8 +51,8 @@ public class RPGBot extends ListenerAdapter {
                     Personnage personnage = jeu.getPersonnage(utilisateurId);
                     if (personnage != null) {
                         if (personnage.peutOuvrirCoffre()) {
-                            personnage.ouvrirCoffre();
-                            event.getChannel().sendMessage("Vous avez ouvert un coffre!").queue();
+                            String lootMessage = personnage.ouvrirCoffre();
+                            event.getChannel().sendMessage(lootMessage).queue();
                         } else {
                             event.getChannel().sendMessage("Vous devez attendre 24 heures pour ouvrir un autre coffre.").queue();
                         }

@@ -1,0 +1,69 @@
+# Format: ID,NOM,CATEGORIE
+1,Épée en fer,commun
+2,Bouclier en bois,commun
+3,Potion de santé,commun
+4,Anneau magique,rare
+5,Arc en argent,rare
+6,Épée en or,légendaire
+7,Armure en mithril,légendaire
+8,Poignard en acier,commun
+9,Helm de cuir,commun
+10,Bottes en cuir,commun
+11,Potion de mana,commun
+12,Amulette de force,rare
+13,Grimoire ancien,rare
+14,Arc en bois d'if,rare
+15,Épée du dragon,légendaire
+16,Amulette de régénération,légendaire
+17,Épée en platine,légendaire
+18,Capuche en soie,commun
+19,Ceinture en cuir,commun
+20,Gloves en fer,commun
+21,Potion de vigueur,commun
+22,Anneau de protection,rare
+23,Épée d’émeraude,rare
+24,Collier d'étoiles,rare
+25,Grimoire de feu,légendaire
+26,Bouclier du titan,légendaire
+27,Armure d'argent,légendaire
+28,Pantalon en lin,commun
+29,Chapeau en laine,commun
+30,Bottes en fer,commun
+31,Potion de vigueur,commun
+32,Bracelet de magie,rare
+33,Épée d'obsidienne,rare
+34,Heaume de feu,rare
+35,Armure du lion,légendaire
+36,Épée du roi,légendaire
+37,Anneau des anciens,légendaire
+38,Ceinture en étoffe,commun
+39,Tabard en soie,commun
+40,Écharpe en laine,commun
+41,Potion de régénération,commun
+42,Collier de sagesse,rare
+43,Épée des vents,rare
+44,Bouclier en argent,rare
+45,Grimoire des ombres,légendaire
+46,Épée du phénix,légendaire
+47,Armure de l'ombre,légendaire
+48,Chaussures en peau,commun
+49,Ceinture d'aventurier,commun
+50,Anneau d'invincibilité,commun
+51,Potion d'anti-venin,rare
+52,Bouclier en acier,rare
+53,Arc en acier,rare
+54,Épée du jugement,légendaire
+55,Grimoire de guérison,légendaire
+56,Armure du dragon,légendaire
+57,Épée de glace,légendaire
+58,Collier de puissance,légendaire
+59,Anneau des étoiles,légendaire
+60,Potion de chance,commun
+61,Ceinture de force,commun
+62,Bracelet d'agilité,commun
+63,Épée de lumière,rare
+64,Arc en ébène,rare
+65,Heaume d'argent,rare
+66,Armure de la tempête,légendaire
+67,Épée de l'archange,légendaire
+68,Collier d'émeraude,légendaire
