@@ -21,5 +21,4 @@ public class CoffreOuvert {
     @Column(name = "recompense")
     private String recompense;
 
-    // Getters et setters omis pour la brièveté
 }

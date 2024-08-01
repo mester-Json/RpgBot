@@ -1,17 +1,14 @@
 package RpgBot;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.ManyToOne;
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "personnages")
 public class Personnage {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long id;
 
     @Column(name = "dernier_coffre")
@@ -26,17 +23,6 @@ public class Personnage {
     @ManyToOne
     @JoinColumn(name = "utilisateur_id")
     private Utilisateur utilisateur;
-
-    // Constructeurs, getters, setters
-    public Personnage() {}
-
-    public Personnage(Long id, String dernierCoffre, int positionX, int positionY, Utilisateur utilisateur) {
-        this.id = id;
-        this.dernierCoffre = dernierCoffre;
-        this.positionX = positionX;
-        this.positionY = positionY;
-        this.utilisateur = utilisateur;
-    }
 
     public Long getId() {
         return id;
@@ -79,19 +65,25 @@ public class Personnage {
     }
 
     public void deplacer(String direction) {
-        if ("nord".equalsIgnoreCase(direction)) {
-            positionY++;
-        } else if ("sud".equalsIgnoreCase(direction)) {
-            positionY--;
-        } else if ("est".equalsIgnoreCase(direction)) {
-            positionX++;
-        } else if ("ouest".equalsIgnoreCase(direction)) {
-            positionX--;
+        switch (direction.toLowerCase()) {
+            case "nord":
+                positionY++;
+                break;
+            case "sud":
+                positionY--;
+                break;
+            case "est":
+                positionX++;
+                break;
+            case "ouest":
+                positionX--;
+                break;
+            default:
+                throw new IllegalArgumentException("Direction inconnue : " + direction);
         }
     }
 
     public boolean peutOuvrirCoffre() {
-        // Exemple simple : un coffre peut être ouvert si le dernier coffre est null ou vide
         return dernierCoffre == null || dernierCoffre.isEmpty();
     }
 

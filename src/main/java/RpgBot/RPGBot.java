@@ -1,5 +1,4 @@
 package RpgBot;
-
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -7,7 +6,7 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 
 public class RPGBot extends ListenerAdapter {
 
-    private static final String TOKEN = "";
+    private static final String TOKEN = ""; // Remplacez par votre token sécurisé
     private Jeu jeu = new Jeu();
 
     public static void main(String[] args) throws Exception {
@@ -34,7 +33,7 @@ public class RPGBot extends ListenerAdapter {
             }
 
             String commandName = command[0].toLowerCase();
-            String discordId = String.valueOf(event.getAuthor().getIdLong());
+            String discordId = event.getAuthor().getId();
 
             switch (commandName) {
                 case "start":

@@ -1,69 +1,76 @@
 package RpgBot;
 
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.query.Query;
+import org.hibernate.cfg.Configuration;
+import java.util.HashSet;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Jeu {
+    private SessionFactory sessionFactory;
+    private Map<String, Personnage> personnages = new HashMap<>();
 
-    public Personnage getPersonnage(String discordId) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            String hql = "SELECT p FROM Personnage p JOIN p.utilisateur u WHERE u.discordId = :discordId";
-            Query<Personnage> query = session.createQuery(hql, Personnage.class);
-            query.setParameter("discordId", discordId);
-            Personnage personnage = query.uniqueResult();
-            return personnage;
-        }
+    public Jeu() {
+        sessionFactory = new Configuration().configure().buildSessionFactory();
     }
 
-    public void ajouterPersonnage(String discordId) {
+    public void commencerJeu(String discordId) {
+        Session session = sessionFactory.openSession();
         Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        Personnage personnage = null;
+
+        try {
             transaction = session.beginTransaction();
 
-            String hqlUser = "FROM Utilisateur WHERE discordId = :discordId";
-            Query<Utilisateur> queryUser = session.createQuery(hqlUser, Utilisateur.class);
-            queryUser.setParameter("discordId", discordId);
-            Utilisateur utilisateur = queryUser.uniqueResult();
+            // Chercher l'utilisateur
+            Utilisateur utilisateur = session.createQuery("SELECT u FROM Utilisateur u WHERE u.discordId = :discordId", Utilisateur.class)
+                    .setParameter("discordId", discordId)
+                    .uniqueResult();
 
             if (utilisateur == null) {
-                transaction.rollback();
-                return;
+                utilisateur = new Utilisateur();
+                utilisateur.setDiscordId(discordId);
+                utilisateur.setNomUtilisateur("Utilisateur");
+
+                session.save(utilisateur);
             }
 
-            String hqlPersonnage = "FROM Personnage WHERE utilisateur.discordId = :discordId";
-            Query<Personnage> queryPersonnage = session.createQuery(hqlPersonnage, Personnage.class);
-            queryPersonnage.setParameter("discordId", discordId);
-            Personnage personnage = queryPersonnage.uniqueResult();
+            if (utilisateur.getPersonnages() == null) {
+                utilisateur.setPersonnages(new HashSet<>());
+            }
 
+            personnage = utilisateur.getPersonnages().stream().findFirst().orElse(null);
             if (personnage == null) {
                 personnage = new Personnage();
                 personnage.setUtilisateur(utilisateur);
+                personnage.setPositionX(0);
+                personnage.setPositionY(0);
+
+                utilisateur.getPersonnages().add(personnage);
                 session.save(personnage);
             }
 
             transaction.commit();
         } catch (Exception e) {
-            if (transaction != null && transaction.isActive()) {
+            if (transaction != null) {
                 transaction.rollback();
             }
             e.printStackTrace();
+        } finally {
+            session.close();
         }
+
+        personnages.put(discordId, personnage);
     }
 
-    public void commencerJeu(String discordId) {
-        Personnage personnage = getPersonnage(discordId);
-        if (personnage == null) {
-            ajouterPersonnage(discordId);
-        }
+    public Personnage getPersonnage(String discordId) {
+        return personnages.get(discordId);
     }
 
-    public void deplacerEtOuvrirCoffre(String discordId, String direction) {
-        Personnage personnage = getPersonnage(discordId);
-        if (personnage != null) {
-            personnage.deplacer(direction);
-            String loot = personnage.ouvrirCoffre();
-            System.out.println(loot);
-        }
+    public void close() {
+        sessionFactory.close();
     }
 }

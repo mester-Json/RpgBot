@@ -15,10 +15,9 @@ public class Utilisateur {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
-    @Column(name = "discord_id", unique = true, nullable = false)
+    @Column(name = "discord_id")
     private String discordId;
 
     @Column(name = "nom_utilisateur")
@@ -27,13 +26,9 @@ public class Utilisateur {
     @Column(name = "date_creation")
     private java.sql.Timestamp dateCreation;
 
-    @Column(name = "nom")
-    private String nom;
-
     @OneToMany(mappedBy = "utilisateur")
     private Set<Personnage> personnages;
 
-    // Getters et setters
     public Long getId() {
         return id;
     }
@@ -64,14 +59,6 @@ public class Utilisateur {
 
     public void setDateCreation(java.sql.Timestamp dateCreation) {
         this.dateCreation = dateCreation;
-    }
-
-    public String getNom() {
-        return nom;
-    }
-
-    public void setNom(String nom) {
-        this.nom = nom;
     }
 
     public Set<Personnage> getPersonnages() {
